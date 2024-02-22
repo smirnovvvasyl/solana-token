@@ -13,12 +13,12 @@ const tokenConfig = {
 	feeBasisPoints: 200, // 2%
 	maxFee: 10_000_000_000, // $tokens
 	mintAmount: 10_000_000_000, // trillion
-	transferFeeOwner: "Pkx3U87UXRB7i6yrCupZ3XmJ2DhiKA8AgX75AQr7cEo", // keys for transfer fee config authority
-	withdrawFeeOwner: "Pkx3U87UXRB7i6yrCupZ3XmJ2DhiKA8AgX75AQr7cEo", // keys for withdrawal authority
+	transferFeeOwner: "3xkZAHXSPX1T41RDECE1JZ1GsnvMyvp7uG1LetQpGXQF", // keys for transfer fee config authority
+	withdrawFeeOwner: "3xkZAHXSPX1T41RDECE1JZ1GsnvMyvp7uG1LetQpGXQF", // keys for withdrawal authority
 
 	// Token Metadata
-	name: "Gold",
-	symbol: "$GOLD",
+	name: "Gold-1",
+	symbol: "$GOLD-1",
 	uri: tokenMetadataUri.uri,
 	description: "A gold Solana SPL token :)",
 }

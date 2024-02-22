@@ -1,7 +1,7 @@
 import dotenv from "dotenv";
 
 import { Keypair, PublicKey } from "@solana/web3.js";
-import { createAccount, createAssociatedTokenAccountIdempotent, withdrawWithheldTokensFromAccounts } from "@solana/spl-token";
+import { createAssociatedTokenAccountIdempotent, withdrawWithheldTokensFromAccounts } from "@solana/spl-token";
 import { getTransferFeeAmount, TOKEN_2022_PROGRAM_ID, unpackAccount } from "@solana/spl-token";
 
 import { connection, tokenConfig } from "./config";
@@ -15,27 +15,12 @@ const privateKeyBytes = secretKeyToBytes(process.env.PRIVATE_KEY);
 const mintAuthority = Keypair.fromSecretKey(privateKeyBytes);
 const tokenAddress = new PublicKey(tokenMinted.publickey);
 
+const privateKeyBytesWithdraw = secretKeyToBytes(process.env.PRIVATE_KEY_WITHDRAW);
+const withdrawWithheldAuthority = Keypair.fromSecretKey(privateKeyBytesWithdraw);
+
 const tokenMintInfo = {
 	transferFeeOwner: new PublicKey(tokenConfig.transferFeeOwner),
 	withdrawFeeOwner: new PublicKey(tokenConfig.withdrawFeeOwner),
-}
-
-const getDestinationAccount = async () => {
-	// Random keypair to use as owner of Token Account
-	const randomKeypair = new Keypair();
-
-	// Create Token Account for random keypair
-	const destinationTokenAccount = await createAccount(
-		connection,
-		mintAuthority, // Payer to create Token Account
-		tokenAddress, // Mint Account address
-		randomKeypair.publicKey, // Token Account owner
-		undefined, // Optional keypair, default to Associated Token Account
-		undefined, // Confirmation options
-		TOKEN_2022_PROGRAM_ID, // Token Extension Program ID
-	)
-
-	return destinationTokenAccount;
 }
 
 // Step 1 - Fetch Fee Accounts
@@ -72,17 +57,25 @@ const fetchFeeAccounts = async () => {
 
 // Step 2 - Harvest Fees
 const harvestFees = async (accountsToWithdrawFrom: PublicKey[]) => {
-	const destinationTokenAccount = await getDestinationAccount();
+	const feeVaultAccount = await createAssociatedTokenAccountIdempotent(
+		connection,
+		mintAuthority,
+		tokenAddress,
+		tokenMintInfo.transferFeeOwner,
+		{},
+		TOKEN_2022_PROGRAM_ID
+	)
 
-	// Withdraw withheld tokens from Token Accounts
 	const withdrawSig = await withdrawWithheldTokensFromAccounts(
 		connection,
-		mintAuthority, // Transaction fee payer
-		tokenAddress, // Mint Account address
-		destinationTokenAccount, // Destination account for fee withdrawal
-		tokenMintInfo.withdrawFeeOwner, // Authority for fee withdrawal
-		[], // Additional signers
-		accountsToWithdrawFrom, // Token Accounts to withdrawal from
+		mintAuthority,
+		tokenAddress,
+		feeVaultAccount,
+		withdrawWithheldAuthority,
+		[],
+		accountsToWithdrawFrom,
+		undefined,
+		TOKEN_2022_PROGRAM_ID
 	)
 
 	return generateExplorerTxUrl(withdrawSig);
@@ -92,8 +85,10 @@ async function withdrawFee() {
 	const fetchFees = await fetchFeeAccounts();
 	console.log("fetch_fee_accounts: ", fetchFees);
 
-	const harvestFee = await harvestFees(fetchFees);
-	console.log("harvest_fees: ", harvestFee);
+	if (fetchFees.length) {
+		const harvestFee = await harvestFees(fetchFees);
+		console.log("harvest_fees: ", harvestFee);
+	}
 }
 
 // Execute the main function

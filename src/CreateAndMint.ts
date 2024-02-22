@@ -163,8 +163,8 @@ async function startMintToken() {
 	const mintTokens = await mintTokensToOwner();
 	console.log("Tokens_Minted: ", mintTokens);
 
-	const checkFee = await checkTransferFee();
-	console.log("check_transfer_fee: ", checkFee);
+	// const checkFee = await checkTransferFee();
+	// console.log("check_transfer_fee: ", checkFee);
 
 	const store_path = "./src/assets/token_minted.json";
 	fs.writeFile(store_path, JSON.stringify(createdToken, null, 4), () => {
