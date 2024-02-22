@@ -8,8 +8,7 @@
   "scripts": {
     "start": "ts-node src/CreateAndMint.ts",
     "metadata": "ts-node src/CreateMetadata22.ts",
-    "uploaduri": "ts-node src/TokenMetadataUpload.ts",
-    "withdrawfee": "ts-node src/withdrawFee.ts"
+    "uploaduri": "ts-node src/TokenMetadataUpload.ts"
   },
   "dependencies": {
     "@metaplex-foundation/mpl-token-metadata": "^3.1.2",
