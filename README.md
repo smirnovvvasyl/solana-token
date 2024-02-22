@@ -18,8 +18,6 @@
 
    - Save whatever you need.
 
-   - Go `.env` file and edit _SPL_TOKEN_2022_MINT_ value with your mint address.
-
 3. Mint custom amount using `src/CreateAndMint.ts` file. You need to customize the values of this file or are able to separate mint process.
 
 ## Create a metadata for mint
