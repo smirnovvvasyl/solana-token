@@ -9,7 +9,7 @@ const ipfs = new IPFS({
 })
 
 async function uploadTokenImage() {
-	const image_file_path = "./src/assets/resources/image.jpg";
+	const image_file_path = "./src/assets/resources/image.png";
 	const imageContents = fs.readFileSync(image_file_path);
 
 	const uploadResult = await ipfs.files.add(imageContents);

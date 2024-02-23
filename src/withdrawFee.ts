@@ -18,11 +18,6 @@ const tokenAddress = new PublicKey(tokenMinted.publickey);
 const privateKeyBytesWithdraw = secretKeyToBytes(process.env.PRIVATE_KEY_WITHDRAW);
 const withdrawWithheldAuthority = Keypair.fromSecretKey(privateKeyBytesWithdraw);
 
-const tokenMintInfo = {
-	transferFeeOwner: new PublicKey(tokenConfig.transferFeeOwner),
-	withdrawFeeOwner: new PublicKey(tokenConfig.withdrawFeeOwner),
-}
-
 // Step 1 - Fetch Fee Accounts
 const fetchFeeAccounts = async () => {
 	const allAccounts = await connection.getProgramAccounts(TOKEN_2022_PROGRAM_ID, {
@@ -61,7 +56,7 @@ const harvestFees = async (accountsToWithdrawFrom: PublicKey[]) => {
 		connection,
 		mintAuthority,
 		tokenAddress,
-		tokenMintInfo.transferFeeOwner,
+		withdrawWithheldAuthority.publicKey,
 		{},
 		TOKEN_2022_PROGRAM_ID
 	)

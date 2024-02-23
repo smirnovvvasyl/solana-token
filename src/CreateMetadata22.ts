@@ -7,7 +7,7 @@ import { PublicKey, createSignerFromKeypair, none, percentAmount, publicKey, sig
 import { TokenStandard, CollectionDetails, PrintSupply, UpdateV1InstructionAccounts, Data } from "@metaplex-foundation/mpl-token-metadata";
 import { createV1, updateV1, Collection, Creator, Uses, CreateV1InstructionAccounts, CreateV1InstructionData } from "@metaplex-foundation/mpl-token-metadata";
 
-import { tokenConfig } from "./config";
+import { solanaRpc, tokenConfig } from "./config";
 import { secretKeyToBytes } from "./services/services";
 import tokenMinted from "./assets/token_minted.json";
 
@@ -30,7 +30,7 @@ async function main() {
   const mintAuthority = web3.Keypair.fromSecretKey(privateKeyBytes);
   const mint = new web3.PublicKey(SPL_TOKEN_2022_MINT);
 
-  const umi = createUmi("https://api.devnet.solana.com");
+  const umi = createUmi(solanaRpc);
   const signer = createSignerFromKeypair(umi, fromWeb3JsKeypair(mintAuthority));
   umi.use(signerIdentity(signer, true));
 

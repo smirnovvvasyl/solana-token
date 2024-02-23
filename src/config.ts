@@ -3,24 +3,24 @@ import { Connection } from "@solana/web3.js";
 import tokenMetadataUri from "./assets/metadata.json";
 
 dotenv.config();
+const isMainnet = false;
 
 // Initialize connection to local Solana node
-const connection = new Connection("https://api.devnet.solana.com", "confirmed");
+const solanaRpc = isMainnet ? "http://rpc.solscan.com" : "https://api.devnet.solana.com";
+const connection = new Connection(solanaRpc, "confirmed");
 
 const tokenConfig = {
-	test: true,
-	decimals: 9,
+	test: !isMainnet,
+	decimals: 6,
 	feeBasisPoints: 200, // 2%
-	maxFee: 10_000_000_000, // $tokens
-	mintAmount: 10_000_000_000, // trillion
-	transferFeeOwner: "3xkZAHXSPX1T41RDECE1JZ1GsnvMyvp7uG1LetQpGXQF", // keys for transfer fee config authority
-	withdrawFeeOwner: "3xkZAHXSPX1T41RDECE1JZ1GsnvMyvp7uG1LetQpGXQF", // keys for withdrawal authority
+	maxFee: 1000000000000, // $tokens
+	mintAmount: 1000000000000, // trillion
 
 	// Token Metadata
-	name: "Gold-1",
-	symbol: "$GOLD-1",
+	name: "TARD",
+	symbol: "$TARD",
 	uri: tokenMetadataUri.uri,
-	description: "A gold Solana SPL token :)",
+	description: "",
 }
 
 const ipfsConfig = {
@@ -30,4 +30,4 @@ const ipfsConfig = {
 	opt: process.env.IPFS_OPT,
 }
 
-export { connection, tokenConfig, ipfsConfig }
+export { connection, tokenConfig, ipfsConfig, solanaRpc }

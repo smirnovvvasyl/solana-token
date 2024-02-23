@@ -16,6 +16,9 @@ dotenv.config();
 const privateKeyBytes = secretKeyToBytes(process.env.PRIVATE_KEY);
 const mintAuthority = Keypair.fromSecretKey(privateKeyBytes);
 
+const privateKeyBytesWithdraw = secretKeyToBytes(process.env.PRIVATE_KEY_WITHDRAW);
+const withdrawWithheldAuthority = Keypair.fromSecretKey(privateKeyBytesWithdraw);
+
 // Generate keys for token publickkey
 const mintKeypair = Keypair.generate();
 const tokenAddress = mintKeypair.publicKey;
@@ -31,8 +34,8 @@ const tokenMintInfo = {
 	feeBasisPoints: tokenConfig.feeBasisPoints,
 	maxFee: decodeToBigNumber(tokenConfig.maxFee),
 	totalSupply: decodeToBigNumber(tokenConfig.mintAmount),
-	transferFeeOwner: new PublicKey(tokenConfig.transferFeeOwner),
-	withdrawFeeOwner: new PublicKey(tokenConfig.withdrawFeeOwner),
+	transferFeeOwner: withdrawWithheldAuthority.publicKey,
+	withdrawFeeOwner: withdrawWithheldAuthority.publicKey,
 	transferAmount: decodeToBigNumber(1_000), // Transfer 1,000 tokens
 }
 
